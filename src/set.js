@@ -11,34 +11,36 @@ export default function() {
 
   } else {
 
-    let wordSpacing = sketch.UI.getStringFromUser('Word spacing in px', 4);
+    let wordSpacing = sketch.UI.getStringFromUser('Word spacing in px (e.g. 1 or 0.1)', 0);
 
-    wordSpacing = parseInt(wordSpacing.trim());
+    if (isNaN(parseInt(wordSpacing.trim()))) {
 
-    let selection = context.selection;
+      sketch.UI.alert('Bad designer', 'You didn\'t write a number');
 
-    for ( var i = 0; i < selectedCount; i++ ) {
-      let layer = selection[i];
-      let layerType = layer.class();
+    } else {
 
-      if ( layerType == 'MSTextLayer' ) {
+      wordSpacing = parseInt(wordSpacing.trim());
 
-        sketch.UI.message(`kerning: ${selectedLayers.layers[0].style.kerning}`);
+      let selection = context.selection;
 
-        let textValue = layer.stringValue();
+      for ( var i = 0; i < selectedCount; i++ ) {
+        let layer = selection[i];
+        let layerType = layer.class();
 
-        var ranges = getRanges(textValue, ' ');
+        if ( layerType == 'MSTextLayer' ) {
 
-        if (ranges.length < 1) {
-          sketch.UI.message('Error: No matching text found 😢');
-          return false;
+          let textValue = layer.stringValue();
+
+          var ranges = getRanges(textValue, ' ');
+
+          layer.setIsEditingText(true);
+          for (let idx = 0; idx < ranges.length; idx++) {
+            layer.addAttribute_value_forRange_(NSKernAttributeName, wordSpacing, ranges[idx]);
+          }
+          layer.setIsEditingText(false);
+
+          sketch.UI.message(`🚀 Word spacing set to ${wordSpacing}px`);
         }
-
-        layer.setIsEditingText(true);
-        for (let idx = 0; idx < ranges.length; idx++) {
-          layer.addAttribute_value_forRange_(NSKernAttributeName, wordSpacing, ranges[idx]);
-        }
-        layer.setIsEditingText(false);
       }
     }
   }
