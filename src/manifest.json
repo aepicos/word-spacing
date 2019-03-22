@@ -1,0 +1,18 @@
+{
+  "compatibleVersion": 3,
+  "bundleVersion": 1,
+  "icon": "icon.png",
+  "commands": [
+    {
+      "name": "set",
+      "identifier": "word-spacing.set-identifier",
+      "script": "./set.js"
+    }
+  ],
+  "menu": {
+    "title": "word-spacing",
+    "items": [
+      "word-spacing.set-identifier"
+    ]
+  }
+}
